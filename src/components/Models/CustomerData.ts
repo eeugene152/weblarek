@@ -39,10 +39,7 @@ export class CustomerData {
         };
     }
     clearCustomerData(): void {
-        // Object.keys(this).forEach((key) => {
-        //     (this as any)[key] = ''; // иначе ts будет ругаться на динамический ключ
-        // });
-        // но типа говорят что лучше явная очистка без 'as any' - в некоторых случаях ts опять же на то может ругаться/не видеть..
+        //  лучше явная очистка без 'this as any[key]' - в некоторых случаях ts опять же на то может ругаться/не видеть..
         this._payment = '';
         this._address = '';
         this._email = '';
