@@ -17,12 +17,10 @@ export class BinData {
         this._products.push(product);
     }
     deleteProduct(id: string): void {
-        let productToDeleteIndex = this._products.findIndex(product => product.id === id);
-        if (productToDeleteIndex !== -1) {
-            this._products.splice(productToDeleteIndex, 1)
-        }
-        
+        // оставляем в корзине только те продукты, id которых не равен удаляемому.
+        this._products = this._products.filter((product) => product.id !== id);
     }
+
     clearBin(): void {
         this._products = [];
     }

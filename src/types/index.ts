@@ -9,14 +9,6 @@ export interface IApi {
 //объект-тип способы оплаты
 export type TPayment = 'card' | 'cash' | '';
 
-//объект-тип ошибки заполнения формы покупателя
-export type FormErrors = {
-    payment?: string;
-    address?: string;
-    email?: string;
-    phone?: string;
-};
-
 //структура данных товара
 export interface IProduct {
     id: string;
@@ -34,6 +26,10 @@ export interface ICustomer {
     phone: string;
     address: string;
 }
+
+//объект-тип ошибки заполнения формы покупателя. keyof - вытаскивает названия полей,
+// record - новый тип объекта "поля: строка". Pratial - поля необязательны
+export type FormErrors = Partial<Record<keyof ICustomer, string>>;
 
 // ответ сервера со списком товаров
 export interface IProductList {

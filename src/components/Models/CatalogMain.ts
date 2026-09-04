@@ -19,8 +19,7 @@ export class CatalogMain {
         return this._products;
     }
     getSelectedProduct(id: string): IProduct | undefined {
-        let selectedProduct = this._products.find(product => product.id === id)
-        return selectedProduct;
+        return this._products.find(product => product.id === id); // возвращаем сразу результат find (без лишн переменной)
     }
     setPreview(product: IProduct): void {
         this._preview = product;
