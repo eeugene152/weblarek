@@ -11,7 +11,7 @@ import { apiProducts } from './utils/data';
 // Импортируем api класс, адрес и новый слой
 import { Api } from './components/base/Api';
 import { API_URL } from './utils/constants';
-import { AppApi } from './components/base/AppApi';
+import { AppApi } from './components/AppApi';
 
 
 console.log('==== Начинаем тестирование наших классов + методов. ====');
