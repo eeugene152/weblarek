@@ -1,8 +1,11 @@
+import { categoryMap } from '../../../utils/constants';
 import { ensureElement } from '../../../utils/utils';
 import { Card } from './Card';
 
+// задаем тип категории для смены фона категории в карточке
+type CategoryKey = keyof typeof categoryMap;
 // данные дополняющие основные из головного Card
-interface ICardCatalogData {
+interface ICardCatalog {
     category: string;
     image: string;
 }
@@ -16,7 +19,7 @@ interface ICardCatalogActions {
 
 // VIEW — карточка товара в каталоге. титул и цену наследует абстрактного Card
 // от себя - кнопка купить
-export class CardCatalog extends Card<ICardCatalogData> {
+export class CardCatalog extends Card<ICardCatalog> {
     protected categoryElement: HTMLElement;
     protected imageElement: HTMLImageElement;
     
@@ -36,6 +39,16 @@ export class CardCatalog extends Card<ICardCatalogData> {
     // сеттеры для двух новых полей
     protected set category(value: string) {
         this.categoryElement.textContent = value;
+        
+        // перебираем категории. ключ сравниваем с value, находим и 
+        // задаем класс изменяющийся в соотвтетствии с категорией
+        // - для правильного фона категории
+        for (const key in categoryMap) {
+            this.categoryElement.classList.toggle(
+                categoryMap[key as CategoryKey],
+                key === value
+            );
+        }
     }
 
     set image(value: string) {

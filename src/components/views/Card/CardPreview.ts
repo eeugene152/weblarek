@@ -1,5 +1,9 @@
+import { categoryMap } from '../../../utils/constants';
 import { ensureElement } from '../../../utils/utils';
 import { Card } from './Card';
+
+// задаем тип категории для смены фона категории в карточке
+type CategoryKey = keyof typeof categoryMap;
 
 interface ICardPreviewActions {
     onBuy: () => void; // клик по кнопке «Купить»
@@ -39,6 +43,16 @@ export class CardPreview extends Card<ICardPreview> {
     //Сеттеры для отрисовки данных
     protected set category(value: string) {
         this.categoryElement.textContent = value;
+
+        // перебираем категории. ключ сравниваем с value, находим и 
+        // задаем класс изменяющийся в соотвтетствии с категорией
+        // - для правильного фона категории
+        for (const key in categoryMap) {
+            this.categoryElement.classList.toggle(
+                categoryMap[key as CategoryKey],
+                key === value
+            );
+        }
     }
     protected set image(value: string) {
         this.imageElement.src = value;
