@@ -1,13 +1,11 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
 
 export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        loadPaths: [
-          './src/scss'
-        ],
+        loadPaths: ["./src/scss"],
       },
     },
   },
-})
+});

@@ -47,7 +47,7 @@
     position: absolute;
     top: calc(#{$defaultPadding} / 2);
     right: calc(#{$defaultPadding} / 2);
-    @include mixins.icon(2rem, 'close');
+    @include mixins.icon(2rem, "close");
     @include mixins.link(white, $hover);
   }
 
@@ -58,7 +58,7 @@
   }
 
   &__message {
-    white-space:nowrap;
+    white-space: nowrap;
     max-width: 60%;
     text-overflow: ellipsis;
     overflow: hidden;

@@ -1,6 +1,6 @@
 @use "variables" as *;
 @use "mixins";
-@use 'sass:color';
+@use "sass:color";
 
 .form {
   @include mixins.flex(column);
