@@ -16,7 +16,7 @@ export class CustomerData {
         this._email = '';
         this._phone = '';
         this.events = events; // брокер событий добавляем и в конструктор
-    }
+    };
 
     //методы класса
     setCustomerData(data: Partial<ICustomer>): void {

@@ -2,9 +2,10 @@ import { IEvents } from './../base/Events';
 import { ensureElement } from '../../utils/utils';
 import { Component } from '../base/Component';
 
+// на входе у нас только каунтер - количество товаров в корзине
 interface IHeader {
     counter: number;
-}
+};
 
 /* ВАЖНО! - никакие данные в компоненте представления не находятся и
 никакие данные компонент представления не может предоставлять */
@@ -21,9 +22,9 @@ export class Header extends Component<IHeader> {
         this.busketButton.addEventListener('click', () => {
             this.events.emit('basket:open');
         });
-    }
+    };
 
     set counter(value: number) {
         this.counterElement.textContent = String(value);
-    }
-}
+    };
+};

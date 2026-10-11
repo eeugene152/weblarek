@@ -7,13 +7,18 @@ type CategoryKey = keyof typeof categoryMap;
 
 interface ICardPreviewActions {
     onBuy: () => void; // клик по кнопке «Купить»
-}
+};
 // данные дополняющие основные из головного Card
 interface ICardPreview {
     category: string;
     image: string;
     description: string;
-}
+    // Поле нужно, т.к. меняется в зависимости от. но делаем необязательным
+    // т.к. изначально при загрузке сервер присылает данные без этого поля
+    // в классе и конструкторе поле не делаем, там есть кнопка. 
+    // только сеттер для него  - а он приклепает текст к кнопке
+    buttonText?: string;
+};
 
 export class CardPreview extends Card<ICardPreview> {
     protected categoryElement: HTMLElement;
@@ -36,9 +41,9 @@ export class CardPreview extends Card<ICardPreview> {
             this.cardButton.addEventListener('click', (event) => {
                 event.stopPropagation();
                 actions.onBuy();
-            })
+            });
         }
-    }
+    };
 
     //Сеттеры для отрисовки данных
     protected set category(value: string) {
@@ -53,13 +58,13 @@ export class CardPreview extends Card<ICardPreview> {
                 key === value
             );
         }
-    }
+    };
     protected set image(value: string) {
         this.imageElement.src = value;
-    }
+    };
     protected set description(value: string) {
         this.descriptionElement.textContent = value;
-    }
+    };
     
     // переопредилим родительский сеттер цены, чтобы управлять кнопкой
     // - цена може отсутствовать - кнопка блокируется. текст тоже меняется
@@ -72,7 +77,7 @@ export class CardPreview extends Card<ICardPreview> {
             this.priceElement.textContent = `${value} синапсов`;
             this.cardButton.disabled = false; // снимаем блок с кнопки
         }
-    }
+    };
 
     // сеттер для текста кнопки в зависимости от.. - 
     protected set buttonText(value: string) {
@@ -80,5 +85,5 @@ export class CardPreview extends Card<ICardPreview> {
             // - на варианты - купить и удалить из корзины
             this.cardButton.textContent = value;
         }
-    }
-}
+    };
+};

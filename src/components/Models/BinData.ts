@@ -10,7 +10,7 @@ export class BinData {
     constructor(events: IEvents) {
         this._products = []; //массив товаров в корзине создается - пустой изначально
         this.events = events; // брокер событий
-    }
+    };
 
     //методы класса
     getProducts(): IProduct[] {
@@ -49,5 +49,4 @@ export class BinData {
     checkProductInBin(id: string): boolean {
         return this._products.some(product => product.id === id)
     }
-}
-
+};

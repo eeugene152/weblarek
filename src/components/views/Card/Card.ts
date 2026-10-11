@@ -6,7 +6,7 @@ import { Component } from '../../base/Component';
 export interface ICard {
     title: string;
     price: number | null;
-}
+};
 
 // пишем общий класс карточки, который будем использовать в других испостасях
 // добавляем параметр Т - для дочерних классов которые будут добавлять свое
@@ -22,12 +22,12 @@ export abstract class Card<T = object> extends Component<ICard & T> {
         // проверяем наличие в разметке
         this.titleElement = ensureElement<HTMLElement>('.card__title', this.container);
         this.priceElement = ensureElement<HTMLElement>('.card__price', this.container)
-    }
+    };
     
     // защита. все доступно через рендер()
     protected set title(value: string) {
         this.titleElement.textContent = value;
-    }
+    };
     protected set price(value: number | null) {
         // отрабатываем два варианта - где есть цена - даем с валютой. нет - Бесценно
         if (value === null) {
@@ -35,5 +35,5 @@ export abstract class Card<T = object> extends Component<ICard & T> {
         } else {
             this.priceElement.textContent = `${value} синапсов`
         }
-    }
-}
+    };
+};

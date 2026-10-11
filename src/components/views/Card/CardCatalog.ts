@@ -8,14 +8,14 @@ type CategoryKey = keyof typeof categoryMap;
 interface ICardCatalog {
     category: string;
     image: string;
-}
+};
 // Обработчик действий пользователя на карточке. Карточка — динамический
 // компонент: события не эмитит, а получает готовые коллбеки через конструктор.
 // делаем так а не через ..this.events.emit - чтобы не нарушать принцип изолированности
 // и не иметь жесткой завязки на конкретный глобальный брокер
 interface ICardCatalogActions {
   onClick: () => void; // клик по телу карточки — подробности в модальном окне
-} 
+};
 
 // VIEW — карточка товара в каталоге. титул и цену наследует абстрактного Card
 // от себя - кнопка купить
@@ -34,7 +34,7 @@ export class CardCatalog extends Card<ICardCatalog> {
         if (actions?.onClick) {
             this.container.addEventListener('click', actions.onClick)
         }
-    }
+    };
 
     // сеттеры для двух новых полей
     protected set category(value: string) {
@@ -49,9 +49,9 @@ export class CardCatalog extends Card<ICardCatalog> {
                 key === value
             );
         }
-    }
+    };
 
     set image(value: string) {
         this.imageElement.src = value;  //src - для картинок
-    }
-}
+    };
+};

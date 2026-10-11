@@ -8,7 +8,7 @@ import { IEvents } from '../../base/Events';
 export interface IForm {
     valid: boolean; // можно ли проводить (управляет disabled у submit)
     errors: string; // текст ошибок валидации
-}
+};
 
 // добавим дженерик <T = object> - дочерние классы смогут типизировать свои инпуты
 export class Form <T = object> extends Component<IForm & T> {
@@ -37,15 +37,16 @@ export class Form <T = object> extends Component<IForm & T> {
         // слушаем отправку формы
         this.container.addEventListener('submit', (event) => {
             event.preventDefault();
-            this.events.emit('form:submitted');
+            // если форма - ордер - будет order:submit. если customer - соответственно
+            this.events.emit(`${this.container.name}:submit`);
         });
-    }
+    };
     
     protected set valid(value: boolean) {
         this.submitButton.disabled = !value;
-    }
+    };
 
     protected set errors(value: string) {
         this.errorsElement.textContent = value;
-    }
-}
+    };
+};

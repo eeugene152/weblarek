@@ -8,7 +8,7 @@ import { Form } from './Form';
 interface IFormContacts {
     email: string;
     phone: string;
-}
+};
 
 // опять наследуемся от формы -родителя
 export class FormContacts extends Form<IFormContacts> {
@@ -17,7 +17,7 @@ export class FormContacts extends Form<IFormContacts> {
 
     // не протектим в конструкторе
     constructor(events: IEvents, container: HTMLFormElement) {
-        super(events, container)
+        super(events, container);
 
         this.emailElement = ensureElement<HTMLInputElement>('[name="email"]', this.container);
         this.phoneElement = ensureElement<HTMLInputElement>('[name="phone"]', this.container);
@@ -25,8 +25,8 @@ export class FormContacts extends Form<IFormContacts> {
 
     protected set email(value: string) {
         this.emailElement.value = value;
-    }
+    };
     protected set phone(value: string) {
         this.phoneElement.value = value;
-    }
-}
+    };
+};

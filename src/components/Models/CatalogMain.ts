@@ -12,7 +12,7 @@ export class CatalogMain {
         this._products = []; //каталог создается - пустой изначально
         this._preview = null; //превьюшка изначально равна null
         this.events = events; // брокер событий добавляем и в конструктор
-    }
+    };
 
     //методы класса
     // метод меняет данные, значит должен генерировать событие 
@@ -37,4 +37,4 @@ export class CatalogMain {
     getPreview(): IProduct | null {
         return this._preview
     }
-}
+};

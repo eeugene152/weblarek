@@ -6,7 +6,7 @@ import { Form } from './Form';
 // поля для формы ордера
 interface IFormOrder {
     address: string;
-}
+};
 
 // наследуемся от осн формы и передаем в дженерик интерфейс полей
 export class FormOrder extends Form<IFormOrder> {
@@ -27,16 +27,16 @@ export class FormOrder extends Form<IFormOrder> {
         // вешаем слушатели на кнопки выбора варианта оплаты
         this.onLineButton.addEventListener('click', () => {
             this.events.emit('order:payment-change', { payment: 'card' });
-        })
+        });
         this.onReceiptButton.addEventListener('click', () => {
             this.events.emit('order:payment-change', { payment: 'cash' });
-        })
-    }
+        });
+    };
     
     // сеттер для адреса. защищен. полю-инпуту присваиваем вэлью через 'вэлью'
     protected set address(value: string) {
         this.addressElement.value = value;
-    }
+    };
     
     // метод ля переключения активности кнопок выбора варианта облаты
     // до момента выбора - делаем третий вариант - ''
@@ -51,5 +51,5 @@ export class FormOrder extends Form<IFormOrder> {
         } else if (activeName === 'cash') {
             this.onReceiptButton.classList.add('button_alt-active');
         }  // в противном случае у нас остается пока вариант - ''
-    }
-}
+    };
+};

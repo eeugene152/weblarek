@@ -5,7 +5,7 @@ import { Component } from '../base/Component';
 // Данные модалки — готовый DOM-элемент, который нужно показать.
 interface IModalData {
     content: HTMLElement;
-}
+};
 
 // VIEW — модальное окно. Универсальный контейнер:
 // в .modal__content кладётся любой готовый DOM-элемент (например, форма).
@@ -27,23 +27,23 @@ export class Modal extends Component<IModalData> {
         // чтобы не закрывался при клике по себе
         this.windowElement.addEventListener('click', (event) => event.stopPropagation())
 
-    }
+    };
 
     // прописываем сеттер - когда надо добавить контент из-вне
     // также делаем его protected тк. доступ тольк4о через render изначального компонента
     protected set content(value: HTMLElement) {
         this.contentElement.replaceChildren(value)
-    }
+    };
 
     // методы - команды компоненту (ничего не меняют - открыть/закрыть)
     close(): void {
         this.container.classList.remove('modal_active');
         this.contentElement.replaceChildren(); // при закрытии очищается - не надо хранить инфо в закрытом окне
-    }
+    };
 
     open(): void {
         this.container.classList.add('modal_active'); // добавляем активку
-    }
+    };
 
     // переопределяем метод рендер - используем родительский стандарт, но
     // добавляем собственный метод - "открытие модалки"
@@ -51,5 +51,5 @@ export class Modal extends Component<IModalData> {
         super.render(data);
         this.open();
         return this.container;
-    }
-}
+    };
+};

@@ -3,12 +3,12 @@ import { Card } from './Card';
 
 interface ICardBasketActions {
     onRemove: () => void; // клик по кнопке удалить из корзины
-}
+};
 
 // доп данные к головной Card
 interface ICardBasket {
     index: number;
-}
+};
 
 export class CardBasket extends Card<ICardBasket> {
     protected itemBasketIndexElement: HTMLElement;
@@ -29,9 +29,9 @@ export class CardBasket extends Card<ICardBasket> {
                 actions.onRemove();
             })
         }
-    }
+    };
 
     protected set index(value: number) {
         this.itemBasketIndexElement.textContent = `${value}`;
-    }
-}
+    };
+};

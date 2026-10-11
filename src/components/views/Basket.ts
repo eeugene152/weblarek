@@ -1,15 +1,15 @@
 import { ensureElement } from '../../utils/utils';
 import { Component } from '../base/Component';
 
-
+// действия по кнопке
 interface IBasketActions {
     onOrder: () => void; // клик по кнопке оформить
-}
+};
 
 interface IBasket {
     items: HTMLElement[];
     total: number;
-}
+};
 
 // данные корзины
 export class Basket extends Component<IBasket> {
@@ -32,7 +32,7 @@ export class Basket extends Component<IBasket> {
                 actions.onOrder();
             })
         }
-    }
+    };
 
     protected set items(goods: HTMLElement[]) {
         // если в корзине чтото есть наполняем ее и с кнопки снимаем блок
@@ -50,10 +50,10 @@ export class Basket extends Component<IBasket> {
             // и на блокируем кнопку - по тз
             this.basketButton.setAttribute('disabled', 'true');
         }
-    }
+    };
 
     // НЕ СЧИТАЕМ!!!)) Сеттер просто принимает ГОТОВУЮ сумму от Презентера и рисует её
     protected set total(value: number) {
         this.totalElement.textContent = `${value} синапсов`;
-    }
-}
+    };
+};
