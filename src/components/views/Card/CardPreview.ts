@@ -1,10 +1,11 @@
-import { categoryMap } from "../../../utils/constants";
-import { ensureElement } from "../../../utils/utils";
-import { Card } from "./Card";
+import { categoryMap } from '../../../utils/constants';
+import { ensureElement } from '../../../utils/utils';
+import { Card } from './Card';
 
 // задаем тип категории для смены фона категории в карточке
 type CategoryKey = keyof typeof categoryMap;
 
+// оставляем интерфейс экшенов для порядка
 interface ICardPreviewActions {
   onBuy: () => void; // клик по кнопке «Купить»
 }
@@ -31,26 +32,26 @@ export class CardPreview extends Card<ICardPreview> {
     super(container);
 
     this.categoryElement = ensureElement<HTMLElement>(
-      ".card__category",
+      '.card__category',
       this.container,
     );
     this.imageElement = ensureElement<HTMLImageElement>(
-      ".card__image",
+      '.card__image',
       this.container,
     );
     this.descriptionElement = ensureElement<HTMLElement>(
-      ".card__text",
+      '.card__text',
       this.container,
     );
     this.cardButton = ensureElement<HTMLButtonElement>(
-      ".card__button",
+      '.card__button',
       this.container,
     );
 
-    // Клик по кнопке → документ поступления. Гасим всплытие, чтобы этот
-    // клик не сработал ещё и как клик по телу карточки.
+    // Клик по кнопке. Всплытие не гасим т.к. модалка
+    // все равно закрывается сразу по ТЗ
     if (actions?.onBuy) {
-      this.cardButton.addEventListener("click", (event) => {
+      this.cardButton.addEventListener('click', (event) => {
         event.stopPropagation();
         actions.onBuy();
       });
@@ -83,7 +84,7 @@ export class CardPreview extends Card<ICardPreview> {
   protected set price(value: number | null) {
     if (value === null) {
       this.priceElement.textContent = `Бесценно`;
-      this.cardButton.textContent = "Недоступно";
+      this.cardButton.textContent = 'Недоступно';
       this.cardButton.disabled = true; // блок на кнопку ставим
     } else {
       this.priceElement.textContent = `${value} синапсов`;

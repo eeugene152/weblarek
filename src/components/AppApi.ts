@@ -1,20 +1,22 @@
 import { IProductList, IOrder, IOrderResult, IApi } from "../types/index";
 
 export class AppApi {
-  private _api: IApi;
+  private api: IApi;
 
   // В конструктор передаем объект-интерфейс IApi=/композиция/
   constructor(api: IApi) {
-    this._api = api;
+    this.api = api;
   }
 
   // Получение списка товаров с сервера
   getProducts(): Promise<IProductList> {
-    return this._api.get("/product") as Promise<IProductList>;
+    // убрал грубое приведение к типу - IApi. метод сам подхватит тип и вернет промис
+    return this.api.get<IProductList>('/product');
   }
 
   // Отправка заказа на сервер
   createOrder(order: IOrder): Promise<IOrderResult> {
-    return this._api.post("/order", order) as Promise<IOrderResult>;
+    // убрал грубое приведение к типу - IApi. метод сам подхватит тип и вернет промис
+    return this.api.post<IOrderResult>('/order', order);
   }
 }

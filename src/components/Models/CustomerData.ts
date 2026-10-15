@@ -3,18 +3,18 @@ import { TPayment, ICustomer, FormErrors } from "./../../types/index";
 
 export class CustomerData {
   // приватное поле класса
-  private _payment: TPayment; // сущность типа оплаты - выбор между ничего и налом, картой
-  private _address: string;
-  private _email: string;
-  private _phone: string;
+  private payment: TPayment | null; // сущность типа оплаты - выбор между ничего и налом, картой. Корр.- или состояние "не выбрано"
+  private address: string;
+  private email: string;
+  private phone: string;
   protected events: IEvents; // поле для брокера событий
 
   // Конструктор инициализирует всё пустыми строками. добавляем брокер событий
   constructor(events: IEvents) {
-    this._payment = "";
-    this._address = "";
-    this._email = "";
-    this._phone = "";
+    this.payment = null; // Корр. изначально состояние "не выбрано"
+    this.address = "";
+    this.email = "";
+    this.phone = "";
     this.events = events; // брокер событий добавляем и в конструктор
   }
 
@@ -24,19 +24,19 @@ export class CustomerData {
     let isChanged = false;
 
     if (data.payment !== undefined) {
-      this._payment = data.payment;
+      this.payment = data.payment;
       isChanged = true;
     }
     if (data.address !== undefined) {
-      this._address = data.address;
+      this.address = data.address;
       isChanged = true;
     }
     if (data.email !== undefined) {
-      this._email = data.email;
+      this.email = data.email;
       isChanged = true;
     }
     if (data.phone !== undefined) {
-      this._phone = data.phone;
+      this.phone = data.phone;
       isChanged = true;
     }
 
@@ -49,19 +49,19 @@ export class CustomerData {
   // метод не меняет данные эмита нет
   getCustomerData(): ICustomer {
     return {
-      payment: this._payment,
-      address: this._address,
-      email: this._email,
-      phone: this._phone,
+      payment: this.payment,
+      address: this.address,
+      email: this.email,
+      phone: this.phone,
     };
   }
   // метод меняет данные. в конце эмитим. передаем опять полные данные через метод getCustomerData
   clearCustomerData(): void {
     //  лучше явная очистка без 'this as any[key]' - в некоторых случаях ts опять же на то может ругаться/не видеть..
-    this._payment = "";
-    this._address = "";
-    this._email = "";
-    this._phone = "";
+    this.payment = null; // Корр. при очистке скидываем в null - "не выбрано"
+    this.address = "";
+    this.email = "";
+    this.phone = "";
 
     this.events.emit("customer:changed", this.getCustomerData());
   }
@@ -69,16 +69,16 @@ export class CustomerData {
   validateCustomerData(): FormErrors {
     // создадим объект ошибок. сначала пустым
     const errors: FormErrors = {};
-    if (this._payment === "") {
+    if (this.payment === null) { // Корр. - проверяем на null - "не выбран вариант оплаты"
       errors.payment = "Не выбран тип оплаты.";
     }
-    if (this._address === "") {
+    if (this.address === "") {
       errors.address = "Не указан адрес покупателя.";
     }
-    if (this._email === "") {
+    if (this.email === "") {
       errors.email = "Не указан email покупателя.";
     }
-    if (this._phone === "") {
+    if (this.phone === "") {
       errors.phone = "Не указан телефон покупателя.";
     }
     return errors;

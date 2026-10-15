@@ -5,6 +5,7 @@ import { Form } from "./Form";
 // поля для формы ордера
 interface IFormOrder {
   address: string;
+  payment?: 'card' | 'cash' | null;
 }
 
 // наследуемся от осн формы и передаем в дженерик интерфейс полей
@@ -46,18 +47,11 @@ export class FormOrder extends Form<IFormOrder> {
     this.addressElement.value = value;
   }
 
-  // метод ля переключения активности кнопок выбора варианта облаты
-  // до момента выбора - делаем третий вариант - ''
-  setPaymentClass(activeName: "card" | "cash" | ""): void {
-    // сначала обе кнопки сбрасываем
-    this.onLineButton.classList.remove("button_alt-active");
-    this.onReceiptButton.classList.remove("button_alt-active");
-
-    // добавляем класс активности к выбраной пользователем кнопки
-    if (activeName === "card") {
-      this.onLineButton.classList.add("button_alt-active");
-    } else if (activeName === "cash") {
-      this.onReceiptButton.classList.add("button_alt-active");
-    } // в противном случае у нас остается пока вариант - ''
+  // сеттер для переключения активности кнопок выбора варианта облаты
+  set payment(activeName: 'card' | 'cash' | null) {
+    // поскольку из вариантов оплаты мы убрали "пусто" код здесь можно
+    // упростить до toggle - убираем принудительное общее обнуление и проверку if-else
+    this.onLineButton.classList.toggle('button_alt-active', activeName === 'card');
+    this.onReceiptButton.classList.toggle('button_alt-active', activeName === 'cash');
   }
 }

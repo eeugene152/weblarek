@@ -11,7 +11,10 @@ export interface IApi {
 }
 
 //объект-тип способы оплаты
-export type TPayment = "card" | "cash" | "";
+// оставляем только фактические способы оплаты. если оставить "" - это будет
+// неправильно т.к. тут формально будет считаться 3м способом оплаты.
+// убираем в -> ICustomer + корректировки в CustomerData и main
+export type TPayment = "card" | "cash";
 
 //структура данных товара
 export interface IProduct {
@@ -25,7 +28,7 @@ export interface IProduct {
 
 //структура данных покупателя
 export interface ICustomer {
-  payment: TPayment;
+  payment: TPayment | null; // сотояние когда вариант оплаты не выбран
   email: string;
   phone: string;
   address: string;
