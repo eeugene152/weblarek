@@ -40,7 +40,7 @@ export class Modal extends Component<IModalData> {
 
   // прописываем сеттер - когда надо добавить контент из-вне
   // также делаем его protected тк. доступ тольк4о через render изначального компонента
-  protected set content(value: HTMLElement) {
+  set content(value: HTMLElement) {
     this.contentElement.replaceChildren(value);
   }
 

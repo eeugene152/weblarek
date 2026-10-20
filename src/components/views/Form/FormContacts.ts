@@ -27,10 +27,10 @@ export class FormContacts extends Form<IFormContacts> {
     );
   }
 
-  protected set email(value: string) {
+  set email(value: string) {
     this.emailElement.value = value;
   }
-  protected set phone(value: string) {
+  set phone(value: string) {
     this.phoneElement.value = value;
   }
 }

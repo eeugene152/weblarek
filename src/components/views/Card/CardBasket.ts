@@ -37,7 +37,7 @@ export class CardBasket extends Card<ICardBasket> {
     }
   }
 
-  protected set index(value: number) {
+  set index(value: number) {
     this.itemBasketIndexElement.textContent = `${value}`;
   }
 }

@@ -41,7 +41,7 @@ export class FormOrder extends Form<IFormOrder> {
   }
 
   // сеттер для адреса. защищен. полю-инпуту присваиваем вэлью через 'вэлью'
-  protected set address(value: string) {
+  set address(value: string) {
     this.addressElement.value = value;
   }
 

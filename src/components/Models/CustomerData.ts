@@ -55,13 +55,13 @@ export class CustomerData {
     if (this.payment === null) { // Корр. - проверяем на null - 'не выбран вариант оплаты'
       errors.payment = 'Не выбран тип оплаты.';
     }
-    if (this.address === '') {
+    if (!this.address.trim()) {
       errors.address = 'Не указан адрес покупателя.';
     }
-    if (this.email === '') {
+    if (!this.email.trim()) {
       errors.email = 'Не указан email покупателя.';
     }
-    if (this.phone === '') {
+    if (!this.phone.trim()) {
       errors.phone = 'Не указан телефон покупателя.';
     }
     return errors;

@@ -88,7 +88,8 @@ events.on('items:changed', () => {
     const cardCatalogView = new CardCatalog(cardTemplate, {
       onClick: () => {
         // и еще передаем в шаблон коллбэк на клик по ней
-        events.emit('card:selected', product); // если случается - анонсируется событие "карточка-выбрана"
+        // вместе - передает не весь продукт со всеми полями а только id
+        events.emit('card:selected', { id: product.id }); // если случается - анонсируется событие "карточка-выбрана"
       },
     });
     // заполняем вьюшку данными товара через render из корневого компонента, в котором тот прописан
@@ -119,9 +120,15 @@ appApi
   });
 
 // слушаем событие 'card:selected', берем переданный product и реагируем на него как услышали
-events.on('card:selected', (product: IProduct) => {
-  catalogModel.setPreview(product); // передаем товар в модель данных
+events.on<{ id: string }>('card:selected', ({ id }) => {
+    // презентер сам запрашивает товар у модели по id
+    const product = catalogModel.getSelectedProduct(id);
+    // если товар найден, передаем его в модель для установки в превью
+    if (product) {
+        catalogModel.setPreview(product);
+    }
 });
+
 
 events.on('card:action', () => {
     const product = catalogModel.getPreview();
@@ -217,15 +224,6 @@ events.on('basket:checkout', () => {
 });
 
 // =============== ОРДЕРА ==========================================================
-// слушаем событие 'order:open'
-events.on('order:open', () => {
-  // принудительно запускам наполнение формы актуальными данными
-  events.emit('customer:changed');
-  // рендерим модалку и в ней готовую заполненную вьюшку формы
-  modal.render({
-    content: orderFormView.render(),
-  });
-});
 
 // слушаем клики по кнопкам выбора условий оплаты
 events.on<{ payment: TPayment }>('order:payment-change', (data) => {    

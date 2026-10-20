@@ -39,17 +39,17 @@ export class Basket extends Component<IBasket> {
     });
   }
 
-  protected set items(goods: HTMLElement[]) {
+  set items(goods: HTMLElement[]) {
     // пофигу, пустой массив пришел или полный- сеттер просто берет его и вставляет в список
     this.itemsElement.replaceChildren(...goods);
   }
 
-  protected set buttonDisabled(value: boolean) {
+  set buttonDisabled(value: boolean) {
     this.basketButton.disabled = value;
   }
   
   // НЕ СЧИТАЕМ!!!)) Сеттер просто принимает ГОТОВУЮ сумму от Презентера и рисует её
-  protected set total(value: number) { 
+  set total(value: number) { 
     this.totalElement.textContent = `${value} синапсов`; 
   } 
 }

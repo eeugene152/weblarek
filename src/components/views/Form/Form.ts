@@ -50,11 +50,11 @@ export abstract class Form<T = object> extends Component<IForm & T> {
     });
   }
 
-  protected set valid(value: boolean) {
+  set valid(value: boolean) {
     this.submitButton.disabled = !value;
   }
 
-  protected set errors(value: string) {
+  set errors(value: string) {
     this.errorsElement.textContent = value;
   }
 }

@@ -30,10 +30,10 @@ export abstract class Card<T = object> extends Component<ICard & T> {
   }
 
   // защита. все доступно через рендер()
-  protected set title(value: string) {
+  set title(value: string) {
     this.titleElement.textContent = value;
   }
-  protected set price(value: number | null) {
+  set price(value: number | null) {
     // отрабатываем два варианта - где есть цена - даем с валютой. нет - Бесценно
     if (value === null) {
       this.priceElement.textContent = `Бесценно`;

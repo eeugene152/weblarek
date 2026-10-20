@@ -42,7 +42,7 @@ export class CardCatalog extends Card<ICardCatalog> {
   }
 
   // сеттеры для двух новых полей
-  protected set category(value: string) {
+  set category(value: string) {
     this.categoryElement.textContent = value;
 
     // перебираем категории. ключ сравниваем с value, находим и

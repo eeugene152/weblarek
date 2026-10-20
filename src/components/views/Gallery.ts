@@ -21,7 +21,7 @@ export class Gallery extends Component<IGallery> {
 
   // Сеттер protected: снаружи компонент обновляется только через render().
   // а рендер зашит в основной компонент
-  protected set catalog(items: HTMLElement[]) {
+  set catalog(items: HTMLElement[]) {
     this.catalogElement.replaceChildren(...items);
   }
 }

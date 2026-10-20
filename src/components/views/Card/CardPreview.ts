@@ -56,7 +56,7 @@ export class CardPreview extends Card<ICardPreview> {
   
 
   //Сеттеры для отрисовки данных
-  protected set category(value: string) {
+  set category(value: string) {
     this.categoryElement.textContent = value;
 
     // перебираем категории. ключ сравниваем с value, находим и

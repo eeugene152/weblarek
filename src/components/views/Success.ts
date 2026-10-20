@@ -34,7 +34,7 @@ export class Success extends Component<ISuccess> {
     }
   }
   // НЕ СЧИТАЕМ!!!)) Сеттер просто принимает ГОТОВУЮ сумму от Презентера и рисует её
-  protected set total(value: number) {
+  set total(value: number) {
     this.totalElement.textContent = `Списано ${value} синапсов`;
   }
 }
