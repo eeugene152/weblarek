@@ -1,14 +1,11 @@
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
-
-// действия по кнопке
-interface IBasketActions {
-  onOrder: () => void; // клик по кнопке оформить
-}
+import { IEvents } from '../base/Events';
 
 interface IBasket {
   items: HTMLElement[];
   total: number;
+  buttonDisabled?: boolean;
 }
 
 // данные корзины
@@ -16,9 +13,11 @@ export class Basket extends Component<IBasket> {
   protected itemsElement: HTMLElement;
   protected totalElement: HTMLElement;
   protected basketButton: HTMLButtonElement;
+  protected events: IEvents; // заводим поле для брокера
 
-  constructor(container: HTMLElement, actions?: IBasketActions) {
+  constructor(container: HTMLElement, events: IEvents) {
     super(container);
+    this.events = events; // сохраняем брокер в своем поле
 
     // ищем составляющие
     this.itemsElement = ensureElement<HTMLElement>(
@@ -34,35 +33,23 @@ export class Basket extends Component<IBasket> {
       this.container,
     );
 
-    // клик по кнопке оформить + гасим всплытие
-    if (actions?.onOrder) {
-      this.basketButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        actions.onOrder();
-      });
-    }
+    // клик по кнопке оформить
+    this.basketButton.addEventListener('click', () => {
+      this.events.emit('basket:checkout'); // новое имя события по ревью
+    });
   }
 
   protected set items(goods: HTMLElement[]) {
-    // если в корзине чтото есть наполняем ее и с кнопки снимаем блок
-    if (goods.length > 0) {
-      this.itemsElement.replaceChildren(...goods);
-      this.basketButton.removeAttribute("disabled");
-    } else {
-      // если товаров нет генерим внутри доп элемент вместо списка
-      // с надписью корзина пуста
-      const basketEmptyTxt = document.createElement("p");
-      // добавим класс и текст и добавляем в контейнер на место списка товаров
-      basketEmptyTxt.classList.add("basket__empty-text");
-      basketEmptyTxt.textContent = "Корзина пуста";
-      this.itemsElement.replaceChildren(basketEmptyTxt);
-      // и на блокируем кнопку - по тз
-      this.basketButton.setAttribute("disabled", "true");
-    }
+    // пофигу, пустой массив пришел или полный- сеттер просто берет его и вставляет в список
+    this.itemsElement.replaceChildren(...goods);
   }
 
-  // НЕ СЧИТАЕМ!!!)) Сеттер просто принимает ГОТОВУЮ сумму от Презентера и рисует её
-  protected set total(value: number) {
-    this.totalElement.textContent = `${value} синапсов`;
+  protected set buttonDisabled(value: boolean) {
+    this.basketButton.disabled = value;
   }
+  
+  // НЕ СЧИТАЕМ!!!)) Сеттер просто принимает ГОТОВУЮ сумму от Презентера и рисует её
+  protected set total(value: number) { 
+    this.totalElement.textContent = `${value} синапсов`; 
+  } 
 }

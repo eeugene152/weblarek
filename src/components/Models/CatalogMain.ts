@@ -1,5 +1,5 @@
-import { IEvents } from "../base/Events";
-import { IProduct } from "./../../types/index";
+import { IEvents } from '../base/Events';
+import { IProduct } from './../../types/index';
 
 export class CatalogMain {
   // приватные поля класса
@@ -19,13 +19,13 @@ export class CatalogMain {
   saveProducts(products: IProduct[]): void {
     this.products = products;
     // каталог изменился - делаем эмит. туда передаем измененный массив
-    this.events.emit("items:changed", { items: this.products });
+    this.events.emit('items:changed');
   }
   // метод тоже меняет данные. делаем эмит.
   setPreview(product: IProduct): void {
     this.preview = product;
     // в эмит передаем изменившийся превью
-    this.events.emit("preview:changed", this.preview);
+    this.events.emit('preview:changed');
   }
   // далее методы ничего не меняют
   getProducts(): IProduct[] {

@@ -1,4 +1,3 @@
-import { IEvents } from "./../base/Events";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 
@@ -15,10 +14,7 @@ export class Modal extends Component<IModalData> {
   protected contentElement: HTMLElement;
   protected windowElement: HTMLElement;
 
-  constructor(
-    protected event: IEvents,
-    container: HTMLElement,
-  ) {
+  constructor(container: HTMLElement) {
     super(container);
 
     this.closeButtonElement = ensureElement<HTMLButtonElement>(

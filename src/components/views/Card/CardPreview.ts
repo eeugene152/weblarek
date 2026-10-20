@@ -1,24 +1,20 @@
 import { categoryMap } from '../../../utils/constants';
 import { ensureElement } from '../../../utils/utils';
 import { Card } from './Card';
+import { CategoryKey } from '../../../types/index';
+import { IEvents } from '../../base/Events';
 
-// задаем тип категории для смены фона категории в карточке
-type CategoryKey = keyof typeof categoryMap;
-
-// оставляем интерфейс экшенов для порядка
-interface ICardPreviewActions {
-  onBuy: () => void; // клик по кнопке «Купить»
-}
 // данные дополняющие основные из головного Card
 interface ICardPreview {
   category: string;
-  image: string;
+  image: { src: string; alt: string }; // string на объект - добавили текст к картинке
   description: string;
   // Поле нужно, т.к. меняется в зависимости от. но делаем необязательным
   // т.к. изначально при загрузке сервер присылает данные без этого поля
   // в классе и конструкторе поле не делаем, там есть кнопка.
   // только сеттер для него  - а он приклепает текст к кнопке
   buttonText?: string;
+  buttonDisabled?: boolean;
 }
 
 export class CardPreview extends Card<ICardPreview> {
@@ -26,10 +22,12 @@ export class CardPreview extends Card<ICardPreview> {
   protected imageElement: HTMLImageElement;
   protected descriptionElement: HTMLElement;
   protected cardButton: HTMLButtonElement;
+  protected events: IEvents; // заводим поле для брокера
 
   // в контструкторе этого класса протектед не указываем т.к. он такой сделан в родителе
-  constructor(container: HTMLElement, actions?: ICardPreviewActions) {
-    super(container);
+  constructor(container: HTMLElement, events: IEvents) {
+    super(container); // родителю - только контейнер
+    this.events = events; // сохраняем брокер в своем поле
 
     this.categoryElement = ensureElement<HTMLElement>(
       '.card__category',
@@ -50,13 +48,12 @@ export class CardPreview extends Card<ICardPreview> {
 
     // Клик по кнопке. Всплытие не гасим т.к. модалка
     // все равно закрывается сразу по ТЗ
-    if (actions?.onBuy) {
-      this.cardButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        actions.onBuy();
+    // кнопка тут сама кричит в систему
+    this.cardButton.addEventListener('click', () => {
+        this.events.emit('card:action');
       });
     }
-  }
+  
 
   //Сеттеры для отрисовки данных
   protected set category(value: string) {
@@ -72,32 +69,20 @@ export class CardPreview extends Card<ICardPreview> {
       );
     }
   }
-  protected set image(value: string) {
-    this.imageElement.src = value;
+  set image(value: { src: string; alt: string }) { // добавили текст к картинке
+    this.setImage(this.imageElement, value.src, value.alt);
   }
   protected set description(value: string) {
     this.descriptionElement.textContent = value;
   }
 
-  // переопредилим родительский сеттер цены, чтобы управлять кнопкой
-  // - цена може отсутствовать - кнопка блокируется. текст тоже меняется
-  protected set price(value: number | null) {
-    if (value === null) {
-      this.priceElement.textContent = `Бесценно`;
-      this.cardButton.textContent = 'Недоступно';
-      this.cardButton.disabled = true; // блок на кнопку ставим
-    } else {
-      this.priceElement.textContent = `${value} синапсов`;
-      this.cardButton.disabled = false; // снимаем блок с кнопки
-    }
+  // подпись и доступность кнопки вычисляется в презентере и
+  // передавает через независимые сеттеры:
+  set buttonText(value: string) {
+    this.cardButton.textContent = value;
   }
 
-  // сеттер для текста кнопки в зависимости от.. -
-  protected set buttonText(value: string) {
-    if (!this.cardButton.disabled) {
-      // меняем только если она доступна
-      // - на варианты - купить и удалить из корзины
-      this.cardButton.textContent = value;
-    }
-  }
+  set buttonDisabled(value: boolean) {
+    this.cardButton.disabled = value;
+  } 
 }

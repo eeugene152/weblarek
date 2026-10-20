@@ -1,3 +1,6 @@
+import { categoryMap } from '../utils/constants';
+export type CategoryKey = keyof typeof categoryMap;
+
 // import { IProduct } from './index';
 export type ApiPostMethods = "POST" | "PUT" | "DELETE";
 
@@ -14,7 +17,7 @@ export interface IApi {
 // оставляем только фактические способы оплаты. если оставить "" - это будет
 // неправильно т.к. тут формально будет считаться 3м способом оплаты.
 // убираем в -> ICustomer + корректировки в CustomerData и main
-export type TPayment = "card" | "cash";
+export type TPayment = 'card' | 'cash';
 
 //структура данных товара
 export interface IProduct {

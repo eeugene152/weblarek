@@ -9,7 +9,8 @@ export interface IForm {
 }
 
 // добавим дженерик <T = object> - дочерние классы смогут типизировать свои инпуты
-export class Form<T = object> extends Component<IForm & T> {
+// не забываем что класс делаем абстрактный, от которого почкуем остальные
+export abstract class Form<T = object> extends Component<IForm & T> {
   protected errorsElement: HTMLElement;
   protected submitButton: HTMLButtonElement;
 

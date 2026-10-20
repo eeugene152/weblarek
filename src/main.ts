@@ -1,4 +1,4 @@
-import { IProduct } from "./types/index";
+import { IProduct, TPayment } from "./types/index";
 import "./scss/styles.scss";
 
 // импортируем утилиты
@@ -58,18 +58,12 @@ const modalContainer = ensureElement<HTMLElement>("#modal-container");
 // созданные нами основные на их основе
 const header = new Header(events, pageContainer);
 const gallery = new Gallery(pageContainer);
-const modal = new Modal(events, modalContainer);
+const modal = new Modal(modalContainer);
 
-// создаем экземпляры вьюшек блоков один раз. в обработчиках - обновлять и показывать готовые представления
-const cardPreviewView = new CardPreview(cloneTemplate(cardPreviewTemplate), {
-    onBuy: () => events.emit('card:action')
-});
-const basketView = new Basket(cloneTemplate(basketTemplate), {
-    onOrder: () => events.emit('order:open')
-});
-// инициализируем модель - пинаем на самом стерте через clearBin
-// метод в свою очередь сам сгенерирует событие basket:open
-basketModel.clearBin();
+// создаем экземпляры вьюшек блоков один раз.
+// события кнопок вызываются во вьюшках - передаем ивенты вторыми аргументами туда
+const cardPreviewView = new CardPreview(cloneTemplate(cardPreviewTemplate), events);
+const basketView = new Basket(cloneTemplate(basketTemplate), events);
 
 const orderFormView = new FormOrder(events, cloneTemplate(orderTemplate) as HTMLFormElement);
 const contactsFormView = new FormContacts(events, cloneTemplate(contactsTemplate) as HTMLFormElement);
@@ -94,7 +88,7 @@ events.on('items:changed', () => {
     const cardCatalogView = new CardCatalog(cardTemplate, {
       onClick: () => {
         // и еще передаем в шаблон коллбэк на клик по ней
-        events.emit("card:selected", product); // если случается - анонсируется событие "карточка-выбрана"
+        events.emit('card:selected', product); // если случается - анонсируется событие "карточка-выбрана"
       },
     });
     // заполняем вьюшку данными товара через render из корневого компонента, в котором тот прописан
@@ -104,7 +98,7 @@ events.on('items:changed', () => {
         title: product.title,
         price: product.price,
         category: product.category,
-        image: CDN_URL + product.image // чиним замечание с путями к картинкам
+        image: { src: CDN_URL + product.image, alt: product.title } // исправили путь и добавили текст к картинке
     });
   });
 
@@ -150,19 +144,18 @@ events.on('preview:changed', () => {
   // получаем выбранный товар напрямую ИЗ МОДЕЛИ каталога!
   const product = catalogModel.getPreview();
     if (!product) return;
-  // сразу проверяе есть ли товар в корзине и пишем вилку вариантов для true/false - удалить/купитть
-  const currentButtonText = basketModel.checkProductInBin(product.id) 
-      ? 'Удалить из корзины' 
-      : 'Купить';
-  // рендерим с явными полями чтобы не "залетели лишние данные", типа id и т.п.
   cardPreviewView.render({
     title: product.title,
     price: product.price,
     category: product.category,
     description: product.description,
-    image: CDN_URL + product.image,
-    buttonText: currentButtonText
-  })
+    image: { src: CDN_URL + product.image, alt: product.title }, // исправили путь и добавили текст к картинке
+    buttonText: product.price === null  // проверяем цену / наличие в корзине
+      ? 'Недоступно'
+        // проверяем есть ли товар в корзине
+      : basketModel.checkProductInBin(product.id) ? 'Удалить из корзины' : 'Купить',
+    buttonDisabled: product.price === null, // не забыли добавить свойство в ICardPreview
+  }); 
   // рендерим модалку
   modal.render({ content: cardPreviewView.render() });
 });
@@ -185,7 +178,6 @@ events.on('basket:changed', () => {
         // Колбэк карточки корзины должен только эмитить
         // сообщение о нажатии кнопки, захватывая id товара
         events.emit('basket:remove', { id: product.id });
-        // basketModel.deleteProduct(product.id);
       }
     });
     // заполняем вьюшку данными товара через render из корневого компонента, в котором тот прописан
@@ -201,7 +193,9 @@ events.on('basket:changed', () => {
   // через ее рендер - туда передаем все готовые карточки + тотальную сумму корзины
   basketView.render({
     items: basketCards,
-    total: basketModel.getBinProductsCost(), // Передаем актуальную сумму из модели!
+    total: basketModel.getBinProductsCost(), // Передаем актуальную сумму из модели
+    // Кнопка заблокирована (disabled = true), если товаров в корзине ровно 0
+    buttonDisabled: goodsInBasket === 0 
   });
   // ЗАПОЛНЕННУЮ basketView далее подхватит опять basket:open и отрисует ее в модалке
 });
@@ -218,6 +212,10 @@ events.on('basket:open', () => {
   modal.render({ content: basketView.render() });
 });
 
+events.on('basket:checkout', () => {
+  modal.render({ content: orderFormView.render() });
+});
+
 // =============== ОРДЕРА ==========================================================
 // слушаем событие 'order:open'
 events.on('order:open', () => {
@@ -230,19 +228,14 @@ events.on('order:open', () => {
 });
 
 // слушаем клики по кнопкам выбора условий оплаты
-events.on('order:payment-change', (data: { payment: 'card' | 'cash' }) => {
-  customerModel.setCustomerData({ payment: data.payment });
+events.on<{ payment: TPayment }>('order:payment-change', (data) => {    
+    customerModel.setCustomerData({ payment: data.payment });
 });
-
 // слушаем появление текста в инпуте адреса
+// записываем в модель адрес к примеру { address: 'Lenin street 2' }
 events.on('order:change', (data: { field: string; value: string }) => {
-  // записываем в модель адрес к примеру { address: 'Lenin street 2' }
-  if (data.field === "address" || data.field === "text" || orderFormView) {
-    customerModel.setCustomerData({ address: data.value });
-  } else {
-    customerModel.setCustomerData({ [data.field]: data.value });
-  }
-});
+  customerModel.setCustomerData({ address: data.value });
+}); 
 
 // слушаем изменение данных покупателя в модели
 events.on('customer:changed', () => {
@@ -268,8 +261,6 @@ events.on('customer:changed', () => {
 
 // слушаем order:submit - по первой форме.
 events.on('order:submit', () => {
-  // принудительно запускам наполнение формы второго шага актуальными данными
-  events.emit('customer:changed');
   // рендерим модалку и в ней готовую заполненную вьюшку формы
   modal.render({
     content: contactsFormView.render(),
@@ -304,22 +295,9 @@ events.on('contacts:submit', () => {
       basketModel.clearBin(); // корзину
       customerModel.clearCustomerData(); // данные покупателя
 
-      // окно успеха
-      const successT = cloneTemplate(successTemplate); // создаем темплейт финалки
-      const successView = new Success(successT, {
-        // вьюшка на основе клона + действие на клик
-        onClose: () => {
-          modal.close();
-        },
-      });
-
-      successView.render({
-        // закидываем во вьюшку сумму покупки - строго из ответа сервера
-        total: result.total,
-      });
-      // рендерим модалку и в ней отрисовываем готовую заполненную вьюшку формы
+      // рендерим модалку и в ее контенте отрисовываем вьюшку формы с тотальным рузельтатом
       modal.render({
-        content: successView.render(),
+        content: successView.render({ total: result.total }),
       });
     })
     .catch((error) => {
@@ -327,3 +305,12 @@ events.on('contacts:submit', () => {
       console.error("Ошибка при отправке заказа на сервер!", error);
     });
 });
+
+//================ начальное состояние =======================================================
+// инициируем начальное состояние строго в конце - когда все слушатели включены.
+// событие 'basket:changed' поймается, пустая корзина отрисуется и кнопка заблокируется
+basketModel.clearBin();
+
+//дергаем модель покупателя - событие 'customer:changed' сработает,
+// очистит все инпуты форм и выставит правильные начальные ошибки
+customerModel.clearCustomerData();

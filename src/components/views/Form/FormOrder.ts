@@ -1,12 +1,10 @@
-import { ensureElement } from "../../../utils/utils";
-import { IEvents } from "../../base/Events";
-import { Form } from "./Form";
+import { ensureElement } from '../../../utils/utils';
+import { IEvents } from '../../base/Events';
+import { Form } from './Form';
+import { ICustomer } from '../../../types/index';
 
-// поля для формы ордера
-interface IFormOrder {
-  address: string;
-  payment?: 'card' | 'cash' | null;
-}
+// чтобы вручную не перечислять поля наследуем их прямо из данных покупателя
+interface IFormOrder extends Pick<ICustomer, 'address' | 'payment'> {};
 
 // наследуемся от осн формы и передаем в дженерик интерфейс полей
 export class FormOrder extends Form<IFormOrder> {
@@ -21,7 +19,7 @@ export class FormOrder extends Form<IFormOrder> {
     super(events, container);
 
     this.addressElement = ensureElement<HTMLInputElement>(
-      ".form__input",
+      '.form__input',
       this.container,
     );
     this.onLineButton = ensureElement<HTMLButtonElement>(
@@ -34,11 +32,11 @@ export class FormOrder extends Form<IFormOrder> {
     );
 
     // вешаем слушатели на кнопки выбора варианта оплаты
-    this.onLineButton.addEventListener("click", () => {
-      this.events.emit("order:payment-change", { payment: "card" });
+    this.onLineButton.addEventListener('click', () => {
+      this.events.emit('order:payment-change', { payment: 'card' });
     });
-    this.onReceiptButton.addEventListener("click", () => {
-      this.events.emit("order:payment-change", { payment: "cash" });
+    this.onReceiptButton.addEventListener('click', () => {
+      this.events.emit('order:payment-change', { payment: 'cash' });
     });
   }
 
@@ -48,8 +46,8 @@ export class FormOrder extends Form<IFormOrder> {
   }
 
   // сеттер для переключения активности кнопок выбора варианта облаты
-  set payment(activeName: 'card' | 'cash' | null) {
-    // поскольку из вариантов оплаты мы убрали "пусто" код здесь можно
+  set payment(activeName: ICustomer['payment']) {
+    // поскольку из вариантов оплаты мы убрали 'пусто' код здесь можно
     // упростить до toggle - убираем принудительное общее обнуление и проверку if-else
     this.onLineButton.classList.toggle('button_alt-active', activeName === 'card');
     this.onReceiptButton.classList.toggle('button_alt-active', activeName === 'cash');

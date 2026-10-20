@@ -1,13 +1,12 @@
 import { categoryMap } from "../../../utils/constants";
 import { ensureElement } from "../../../utils/utils";
 import { Card } from "./Card";
+import { CategoryKey } from '../../../types/index';
 
-// задаем тип категории для смены фона категории в карточке
-type CategoryKey = keyof typeof categoryMap;
 // данные дополняющие основные из головного Card
 interface ICardCatalog {
   category: string;
-  image: string;
+  image: { src: string; alt: string }; // string на объект - добавили текст к картинке
 }
 // Обработчик действий пользователя на карточке. Карточка — динамический
 // компонент: события не эмитит, а получает готовые коллбеки через конструктор.
@@ -57,7 +56,7 @@ export class CardCatalog extends Card<ICardCatalog> {
     }
   }
 
-  set image(value: string) {
-    this.imageElement.src = value; //src - для картинок
+  set image(value: { src: string; alt: string }) { // добавили текст к картинке
+    this.setImage(this.imageElement, value.src, value.alt);
   }
 }
